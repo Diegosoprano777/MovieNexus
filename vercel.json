@@ -1,0 +1,8 @@
+{
+  "buildCommand": "cd MovieNexus && npm install && npm run build",
+  "outputDirectory": "MovieNexus/dist/movie-nexus/browser",
+  "installCommand": "echo 'skip root install'",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
