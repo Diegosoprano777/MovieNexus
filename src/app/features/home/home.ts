@@ -40,11 +40,11 @@ import { MovieCardComponent } from '../../shared/components/movie-card/movie-car
       }
 
       @if (!isLoading() && !error()) {
-        <div class="movies-grid">
+        <!-- <div class="movies-grid">
           @for (movie of movies(); track movie.id) {
             <app-movie-card [movie]="movie" />
           }
-        </div>
+        </div> -->
       }
     </section>
   `,
