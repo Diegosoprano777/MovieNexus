@@ -178,8 +178,10 @@ export class HomeComponent implements OnInit {
   error = signal<string | null>(null);
 
   ngOnInit(): void {
-    this.movieService.getPopularMovies().subscribe({
+    console.log('🏠 Home inicializado. Cargando películas...');
+    this.movieService.getTrendingMovies().subscribe({
       next: (response) => {
+        console.log('✅ ¡Éxito! Datos recibidos de TMDB:', response.results);
         this.movies.set(response.results);
         this.isLoading.set(false);
       },

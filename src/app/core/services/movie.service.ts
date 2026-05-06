@@ -9,41 +9,45 @@ import { Movie, MovieResponse } from '../models/movie.model';
 })
 export class MovieService {
   private http = inject(HttpClient);
-  private baseUrl = environment.baseUrl;
-  private apiKey = environment.apiKey;
+  private apiUrl = environment.baseUrl;
+
+  getTrendingMovies(): Observable<MovieResponse> {
+    // Retornamos un Observable (una promesa de que llegarán datos)
+    return this.http.get<MovieResponse>(`${this.apiUrl}/trending/movie/day`);
+  }
 
   // Obtener películas populares
   getPopularMovies(page: number = 1): Observable<MovieResponse> {
     return this.http.get<MovieResponse>(
-      `${this.baseUrl}/movie/popular?api_key=${this.apiKey}&language=es-ES&page=${page}`
+      `${this.apiUrl}/movie/popular?page=${page}`
     );
   }
 
   // Obtener películas mejor valoradas
   getTopRatedMovies(page: number = 1): Observable<MovieResponse> {
     return this.http.get<MovieResponse>(
-      `${this.baseUrl}/movie/top_rated?api_key=${this.apiKey}&language=es-ES&page=${page}`
+      `${this.apiUrl}/movie/top_rated?page=${page}`
     );
   }
 
   // Obtener estrenos
   getNowPlayingMovies(page: number = 1): Observable<MovieResponse> {
     return this.http.get<MovieResponse>(
-      `${this.baseUrl}/movie/now_playing?api_key=${this.apiKey}&language=es-ES&page=${page}`
+      `${this.apiUrl}/movie/now_playing?page=${page}`
     );
   }
 
   // Buscar películas por nombre
   searchMovies(query: string, page: number = 1): Observable<MovieResponse> {
     return this.http.get<MovieResponse>(
-      `${this.baseUrl}/search/movie?api_key=${this.apiKey}&language=es-ES&query=${query}&page=${page}`
+      `${this.apiUrl}/search/movie?query=${query}&page=${page}`
     );
   }
 
   // Obtener el detalle de una película por ID
   getMovieById(id: number): Observable<Movie> {
     return this.http.get<Movie>(
-      `${this.baseUrl}/movie/${id}?api_key=${this.apiKey}&language=es-ES`
+      `${this.apiUrl}/movie/${id}`
     );
   }
 
