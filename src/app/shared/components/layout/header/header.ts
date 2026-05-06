@@ -22,13 +22,13 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   `,
   styles: [`
     .header {
-      position: fixed;
+      position: sticky;
       top: 0;
       left: 0;
       width: 100%;
       z-index: 1000;
       background: rgba(15, 23, 42, 0.8);
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(12px);
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
       padding: 1rem 0;
     }

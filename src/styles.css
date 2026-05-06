@@ -1,26 +1,33 @@
 :root {
-  /* Colors */
-  --primary: #e50914; /* Cinema Red */
-  --secondary: #1a1a1a;
-  --accent: #f59e0b; /* Gold/Amber */
-  --background: #0f172a; /* Dark Slate Blue */
-  --surface: #1e293b;
+  /* Colores Core */
+  --bg-color: #020617;     /* Fondo más profundo */
+  --bg-accent: #0f172a;
+  --primary: #38bdf8;
+  --primary-glow: rgba(56, 189, 248, 0.3);
+  --accent: #f43f5e;
+  
+  /* Mantengo colores de texto que usa el resto de tu app */
   --text-main: #f8fafc;
   --text-muted: #94a3b8;
 
-  /* Spacing */
-  --spacing-xs: 0.25rem;
+  /* Gradientes Premium */
+  --grad-main: linear-gradient(135deg, var(--primary), #818cf8);
+  --grad-surface: linear-gradient(to bottom, rgba(255,255,255,0.05), transparent);
+
+  /* Espaciado y Radio (Consistencia) */
   --spacing-sm: 0.5rem;
   --spacing-md: 1rem;
   --spacing-lg: 2rem;
-  --spacing-xl: 4rem;
+  --radius-lg: 16px;
 
-  /* Shadows */
+  /* Profundidad */
+  --glass: rgba(15, 23, 42, 0.7);
+  --border-glass: 1px solid rgba(255, 255, 255, 0.1);
+  
+  /* Transiciones y Sombras originales (útiles para la app) */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
-
-  /* Transitions */
   --transition-fast: 0.2s ease;
   --transition-slow: 0.4s ease;
 }
@@ -28,7 +35,7 @@
 body {
   margin: 0;
   font-family: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
-  background-color: var(--background);
+  background-color: var(--bg-color);
   color: var(--text-main);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
@@ -58,3 +65,20 @@ main {
    color: var(--primary); 
    padding: var(--spacing-md);
 */
+
+/* Reto Final del Día 3: Botón Premium */
+.btn-premium {
+  background: var(--grad-main);
+  border-radius: var(--radius-lg);
+  color: #fff;
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: box-shadow var(--transition-fast), transform var(--transition-fast);
+}
+
+.btn-premium:hover {
+  box-shadow: 0 0 15px var(--primary-glow);
+  transform: translateY(-2px);
+}
