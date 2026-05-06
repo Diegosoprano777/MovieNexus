@@ -1,10 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
+import { MovieService } from '../../core/services/movie.service';
+import { Movie } from '../../core/models/movie.model';
+import { MovieCardComponent } from '../../shared/components/movie-card/movie-card';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [],
+  imports: [MovieCardComponent],
   template: `
+    <!-- Hero Section -->
     <div class="hero-container">
       <div class="hero-content">
         <h1 class="hero-title">
@@ -13,9 +17,36 @@ import { Component } from '@angular/core';
         <p class="hero-subtitle">
           Explora las películas más populares, busca tus favoritas y mantente al día con los últimos estrenos.
         </p>
-        <button class="hero-button">Empezar a Explorar</button>
+        <button class="hero-button" (click)="scrollToMovies()">Empezar a Explorar</button>
       </div>
     </div>
+
+    <!-- Películas Populares -->
+    <section class="movies-section" id="movies">
+      <div class="section-header">
+        <h2 class="section-title">🔥 Películas Populares</h2>
+      </div>
+
+      @if (isLoading()) {
+        <div class="spinner-container">
+          <div class="spinner"></div>
+        </div>
+      }
+
+      @if (error()) {
+        <div class="error-msg">
+          ⚠️ {{ error() }}
+        </div>
+      }
+
+      @if (!isLoading() && !error()) {
+        <div class="movies-grid">
+          @for (movie of movies(); track movie.id) {
+            <app-movie-card [movie]="movie" />
+          }
+        </div>
+      }
+    </section>
   `,
   styles: [`
     .hero-container {
@@ -75,10 +106,91 @@ import { Component } from '@angular/core';
       background-color: #7dd3fc;
     }
 
+    .movies-section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+
+    .section-title {
+      font-size: 1.8rem;
+      color: #f8fafc;
+      margin-bottom: 1.5rem;
+    }
+
+    .movies-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .spinner-container {
+      display: flex;
+      justify-content: center;
+      padding: 4rem;
+    }
+
+    .spinner {
+      width: 48px;
+      height: 48px;
+      border: 4px solid rgba(56, 189, 248, 0.2);
+      border-top-color: #38bdf8;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    .error-msg {
+      text-align: center;
+      color: #f87171;
+      padding: 2rem;
+      background: rgba(248, 113, 113, 0.1);
+      border-radius: 12px;
+      font-size: 1rem;
+    }
+
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @media (min-width: 640px) {
+      .movies-grid {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .movies-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      }
+    }
   `]
 })
-export class HomeComponent {}
+export class HomeComponent implements OnInit {
+  private movieService = inject(MovieService);
+
+  movies = signal<Movie[]>([]);
+  isLoading = signal(true);
+  error = signal<string | null>(null);
+
+  ngOnInit(): void {
+    this.movieService.getPopularMovies().subscribe({
+      next: (response) => {
+        this.movies.set(response.results);
+        this.isLoading.set(false);
+      },
+      error: () => {
+        this.error.set('No se pudieron cargar las películas. Verifica tu API Key.');
+        this.isLoading.set(false);
+      }
+    });
+  }
+
+  scrollToMovies(): void {
+    document.getElementById('movies')?.scrollIntoView({ behavior: 'smooth' });
+  }
+}
