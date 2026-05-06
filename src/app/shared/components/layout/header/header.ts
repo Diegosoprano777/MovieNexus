@@ -71,15 +71,20 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
       color: #fff;
     }
 
-    .nav a.active::after {
+    .nav a::after {
       content: '';
       position: absolute;
       bottom: -4px;
       left: 0;
-      width: 100%;
+      width: 0;
       height: 2px;
       background: #38bdf8;
       border-radius: 2px;
+      transition: width 0.3s ease;
+    }
+
+    .nav a:hover::after, .nav a.active::after {
+      width: 100%;
     }
 
     @media (max-width: 640px) {

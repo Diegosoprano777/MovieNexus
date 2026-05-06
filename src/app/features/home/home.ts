@@ -21,7 +21,7 @@ import { MovieCardComponent } from '../../shared/components/movie-card/movie-car
       </div>
     </div>
 
-    <!-- Películas Populares -->
+    <!-- Sección de Películas Populares Oculta
     <section class="movies-section" id="movies">
       <div class="section-header">
         <h2 class="section-title">🔥 Películas Populares</h2>
@@ -40,13 +40,14 @@ import { MovieCardComponent } from '../../shared/components/movie-card/movie-car
       }
 
       @if (!isLoading() && !error()) {
-        <!-- <div class="movies-grid">
+        <div class="movies-grid">
           @for (movie of movies(); track movie.id) {
             <app-movie-card [movie]="movie" />
           }
-        </div> -->
+        </div>
       }
     </section>
+    -->
   `,
   styles: [`
     .hero-container {
