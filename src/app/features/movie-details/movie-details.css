@@ -62,11 +62,60 @@
   background-color: rgba(255, 255, 255, 0.2);
 }
 
-.loading {
+.loading-state {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
   font-size: 1.5rem;
   color: white;
+}
+
+.genres {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.genre-tag {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 0.3rem 0.8rem;
+  border-radius: 15px;
+  font-size: 0.9rem;
+  backdrop-filter: blur(5px);
+}
+
+.movie-cast {
+  margin: 2rem 0;
+}
+
+.movie-cast h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.cast-track {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  padding-bottom: 1rem;
+}
+
+/* Custom scrollbar para la lista horizontal */
+.cast-track::-webkit-scrollbar {
+  height: 8px;
+}
+.cast-track::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+.cast-track::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+}
+.cast-track::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
 }

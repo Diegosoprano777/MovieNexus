@@ -14,6 +14,8 @@ export interface Movie {
   original_language: string;
   original_title: string;
   video: boolean;
+  runtime?: number; // Duración en minutos
+  genres?: { id: number; name: string }[]; // Lista de géneros (Ej: Acción, Comedia)
 }
 
 // Interfaz para la respuesta de la API (lista de películas)
