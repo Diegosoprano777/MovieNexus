@@ -16,11 +16,9 @@ export class MovieService {
     return this.http.get<MovieResponse>(`${this.apiUrl}/trending/movie/day`);
   }
 
-  // Obtener películas populares
-  getPopularMovies(page: number = 1): Observable<MovieResponse> {
-    return this.http.get<MovieResponse>(
-      `${this.apiUrl}/movie/popular?page=${page}`
-    );
+  // NUEVO MÉTODO
+  getPopularMovies() {
+    return this.http.get<MovieResponse>(`${this.apiUrl}/movie/popular`);
   }
 
   // Obtener películas mejor valoradas

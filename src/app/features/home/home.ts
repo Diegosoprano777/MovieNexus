@@ -1,53 +1,51 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MovieService } from '../../core/services/movie.service';
+import { HeroComponent } from './components/hero/hero'; // Importamos el Hero
+import { MovieSlider } from '../../shared/components/movie-slider/movie-slider'; // Agregamos MovieSlider a las importaciones
 import { Movie } from '../../core/models/movie.model';
-import { MovieCardComponent } from '../../shared/components/movie-card/movie-card';
-import { HeroComponent } from './components/hero/hero';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, MovieCardComponent, HeroComponent],
+  imports: [CommonModule, HeroComponent, MovieSlider],
   templateUrl: './home.html',
   styleUrl: './home.css'
 })
 export class HomeComponent implements OnInit {
   private movieService = inject(MovieService);
 
-  // Usamos una Signal para guardar la película destacada
+  // Declaramos nuestras Signals para almacenar el estado de forma reactiva
   featuredMovie = signal<Movie | null>(null);
+  trendingMovies = signal<Movie[]>([]);
+  popularMovies = signal<Movie[]>([]);
   
-  // Lista de todas las películas para la cuadrícula
-  movies = signal<Movie[]>([]);
   isLoading = signal(true);
   error = signal<string | null>(null);
 
   ngOnInit(): void {
-    console.log('🏠 Home inicializado. Cargando películas...');
+    console.log('🏠 Home inicializado. Cargando contenido...');
     
+    // 1. Pedimos las tendencias
     this.movieService.getTrendingMovies().subscribe({
-      next: (response) => {
-        console.log('✅ ¡Éxito! Datos recibidos de TMDB:', response.results);
-        
-        if (response.results.length > 0) {
-          // Tomamos la posición [0] del array para ser el Hero
-          this.featuredMovie.set(response.results[0]);
-          
-          // Guardamos el resto para la cuadrícula
-          this.movies.set(response.results);
+      next: (data) => {
+        if (data.results.length > 0) {
+          this.featuredMovie.set(data.results[0]); // Ponemos la #1 como Destacada
+          this.trendingMovies.set(data.results); // Guardamos la lista completa para el Slider
         }
-        
+      }
+    });
+
+    // 2. Pedimos las populares
+    this.movieService.getPopularMovies().subscribe({
+      next: (data) => {
+        this.popularMovies.set(data.results); // Guardamos la lista de populares
         this.isLoading.set(false);
       },
       error: () => {
-        this.error.set('No se pudieron cargar las películas. Verifica tu API Key.');
+        this.error.set('Error al cargar las películas.');
         this.isLoading.set(false);
       }
     });
-  }
-
-  scrollToMovies(): void {
-    document.getElementById('movies')?.scrollIntoView({ behavior: 'smooth' });
   }
 }
