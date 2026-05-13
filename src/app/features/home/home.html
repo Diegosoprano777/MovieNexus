@@ -1,0 +1,35 @@
+<!-- Verificamos si ya llegó la información de la API usando el control flow -->
+@if (featuredMovie(); as movie) {
+  <!-- Padre (Home) pasándole la variable 'movie' al Hijo (Hero) -->
+  <app-hero [movie]="movie"></app-hero>
+} @else {
+  <!-- Mientras llega la información, mostramos un estado de carga (Skeleton) -->
+  <div class="loading-hero">Cargando...</div>
+}
+
+<!-- Sección de Películas Populares -->
+<section class="movies-section" id="movies">
+  <div class="section-header">
+    <h2 class="section-title">🔥 Películas Populares</h2>
+  </div>
+
+  @if (isLoading()) {
+    <div class="spinner-container">
+      <div class="spinner"></div>
+    </div>
+  }
+
+  @if (error()) {
+    <div class="error-msg">
+      ⚠️ {{ error() }}
+    </div>
+  }
+
+  @if (!isLoading() && !error()) {
+    <div class="movies-grid">
+      @for (movie of movies(); track movie.id) {
+        <app-movie-card [movie]="movie" />
+      }
+    </div>
+  }
+</section>
