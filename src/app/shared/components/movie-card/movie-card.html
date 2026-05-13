@@ -1,4 +1,4 @@
-<div class="movie-card">
+<div class="movie-card" [routerLink]="['/movie', movie.id]" style="cursor: pointer;">
   <div class="card-image-container">
     <img
       [src]="posterUrl"
