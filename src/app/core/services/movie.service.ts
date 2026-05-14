@@ -36,11 +36,14 @@ export class MovieService {
     );
   }
 
-  // Buscar películas por nombre
-  searchMovies(query: string, page: number = 1): Observable<MovieResponse> {
-    return this.http.get<MovieResponse>(
-      `${this.apiUrl}/search/movie?query=${query}&page=${page}`
-    );
+  /**
+   * Busca películas por término de búsqueda.
+   * @param query Texto a buscar
+   */
+  searchMovies(query: string) {
+    return this.http.get<MovieResponse>(`${this.apiUrl}/search/movie`, {
+      params: { query } // Angular convierte esto en ?query=Batman automáticamente
+    });
   }
 
   // Obtener el detalle de una película por ID

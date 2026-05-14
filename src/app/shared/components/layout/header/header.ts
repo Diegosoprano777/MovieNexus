@@ -1,100 +1,66 @@
-import { Component } from '@angular/core';
+import { Component, effect, inject, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { MovieService } from '../../../core/services/movie.service';
+import { Movie } from '../../../core/models/movie.model';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive],
-  template: `
-    <header class="header">
-      <div class="container">
-        <div class="logo" routerLink="/">
-          Movie<span class="highlight">Nexus</span>
-        </div>
-        <nav class="nav">
-          <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Inicio</a>
-          <a routerLink="/movies" routerLinkActive="active">Películas</a>
-          <a routerLink="/search" routerLinkActive="active">Buscar</a>
-          <a routerLink="/favorites" routerLinkActive="active">Favoritos</a>
-        </nav>
-      </div>
-    </header>
-  `,
-  styles: [`
-    .header {
-      position: sticky;
-      top: 0;
-      left: 0;
-      width: 100%;
-      z-index: 1000;
-      background: rgba(15, 23, 42, 0.8);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      padding: 1rem 0;
-    }
-
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .logo {
-      font-size: 1.5rem;
-      font-weight: 800;
-      color: #fff;
-      cursor: pointer;
-      letter-spacing: -1px;
-    }
-
-    .highlight {
-      color: #38bdf8;
-    }
-
-    .nav {
-      display: flex;
-      gap: 2rem;
-    }
-
-    .nav a {
-      color: #94a3b8;
-      font-weight: 500;
-      font-size: 0.95rem;
-      transition: color 0.2s ease;
-      position: relative;
-    }
-
-    .nav a:hover, .nav a.active {
-      color: #fff;
-    }
-
-    .nav a::after {
-      content: '';
-      position: absolute;
-      bottom: -4px;
-      left: 0;
-      width: 0;
-      height: 2px;
-      background: #38bdf8;
-      border-radius: 2px;
-      transition: width 0.3s ease;
-    }
-
-    .nav a:hover::after, .nav a.active::after {
-      width: 100%;
-    }
-
-    @media (max-width: 640px) {
-      .nav {
-        gap: 1rem;
-      }
-      .nav a {
-        font-size: 0.85rem;
-      }
-    }
-  `]
+  imports: [RouterLink, RouterLinkActive, CommonModule],
+  templateUrl: './header.html',
+  styleUrl: './header.css'
 })
-export class HeaderComponent {}
+export class Header {
+  private movieService = inject(MovieService);
+
+  // 1. Declaramos nuestras signals
+  searchQuery = signal(''); // lo que el usuario escribe
+  searchResults = signal<Movie[]>([]); // los resultados que llegan de la API
+  isSearching = signal(false); // para mostrar un spinner de carga
+
+  constructor() {
+    // 2. El effect: reacciona automáticamente cuando searchQuery cambia
+    effect((onCleanup) => {
+      const query = this.searchQuery();
+
+      // si el texto es muy corto, no buscamos (ahorramos peticiones)
+      if (query.length < 3) {
+        this.searchResults.set([]);
+        this.isSearching.set(false);
+        return;
+      }
+
+      this.isSearching.set(true);
+
+      // 3. EL "Debounce": Retrasamos la búsqueda 300ms
+      // ¿Por qué? Si el usuario escribe "Batman" muy rápido (6 letras),
+      const timeoutId = setTimeout(() => {
+        this.movieService.searchMovies(query).subscribe({
+          next: (response) => {
+            // Tomamos solo los primeros 5 resultados para no llenar la pantalla
+            this.searchResults.set(response.results.slice(0, 5));
+            this.isSearching.set(false);
+          },
+          error: () => this.isSearching.set(false)
+        });
+      }, 300);
+
+      // 4. Limpieza: Si el usuario escribe OTRA letra antes de los 300ms,
+      // cancelamos el temporizador anterior.
+      onCleanup(() => clearTimeout(timeoutId));
+    });
+  }
+
+  // Método que conectaremos al HTML para actualizar la signal
+  onSearchInput(event: Event) {
+    const input = event.target as HTMLInputElement;
+    this.searchQuery.set(input.value);
+  }
+
+  // Método para cerrar el buscador al hacer clic en un resultado
+  closeSearch() {
+    this.searchQuery.set('');
+    this.searchResults.set([]);
+  }
+}
