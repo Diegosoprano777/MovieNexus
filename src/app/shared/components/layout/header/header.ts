@@ -1,7 +1,7 @@
 import { Component, effect, inject, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { MovieService } from '../../../core/services/movie.service';
-import { Movie } from '../../../core/models/movie.model';
+import { MovieService } from '../../../../core/services/movie.service';
+import { Movie } from '../../../../core/models/movie.model';
 import { CommonModule } from '@angular/common';
 
 @Component({
