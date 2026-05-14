@@ -1,7 +1,8 @@
 .movie-card {
   position: relative;
   width: 200px;
-  flex: 0 0 auto; /* Importante para que no se aplasten en el scroll horizontal */
+  flex: 0 0 auto;
+  /* Importante para que no se aplasten en el scroll horizontal */
   border-radius: 12px;
   overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -10,13 +11,15 @@
 }
 
 .movie-card:hover {
-  transform: scale(1.05); /* Efecto zoom al pasar el mouse */
+  transform: scale(1.05);
+  /* Efecto zoom al pasar el mouse */
   z-index: 10;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
 }
 
 .card-image-container {
-  aspect-ratio: 2 / 3; /* Proporción clásica de un póster de cine */
+  aspect-ratio: 2 / 3;
+  /* Proporción clásica de un póster de cine */
   width: 100%;
 }
 
@@ -33,9 +36,10 @@
   left: 0;
   right: 0;
   padding: 1rem;
-  background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 100%);
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, transparent 100%);
   color: white;
-  opacity: 0; /* Oculto por defecto */
+  opacity: 0;
+  /* Oculto por defecto */
   transition: opacity 0.3s ease;
 }
 
@@ -49,7 +53,8 @@
   margin-bottom: 0.25rem;
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis; /* Pone "..." si el texto es muy largo para caber */
+  text-overflow: ellipsis;
+  /* Pone "..." si el texto es muy largo para caber */
 }
 
 .movie-rating {
@@ -59,4 +64,59 @@
   font-size: 0.8rem;
   font-weight: 600;
   color: #fbbf24;
+}
+
+.favorite-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border: none;
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 20;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.favorite-btn svg {
+  width: 20px;
+  height: 20px;
+  transition: all 0.3s ease;
+  fill: transparent;
+  stroke: rgba(255, 255, 255, 0.8);
+  stroke-width: 2px;
+}
+
+.favorite-btn:hover {
+  background: rgba(0, 0, 0, 0.6);
+  transform: scale(1.1);
+}
+
+.favorite-btn:hover svg {
+  stroke: white;
+}
+
+.favorite-btn.active {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.favorite-btn.active svg {
+  fill: #ef4444; /* Rojo vibrante */
+  stroke: #ef4444;
+  animation: heartbeat 0.4s ease-in-out;
+}
+
+@keyframes heartbeat {
+  0% { transform: scale(1); }
+  25% { transform: scale(1.3); }
+  50% { transform: scale(1); }
+  75% { transform: scale(1.3); }
+  100% { transform: scale(1); }
 }
