@@ -29,6 +29,15 @@
         </div>
       </section>
 
+      <!-- Tráiler de la película diferido -->
+      @defer (on viewport) {
+        <app-movie-trailer [movieId]="data.details.id"></app-movie-trailer>
+      } @placeholder {
+        <div class="trailer-placeholder">
+          <span>🎬 Cargando tráiler oficial...</span>
+        </div>
+      }
+
       <button class="back-button" onclick="history.back()">← Volver</button>
     </div>
   </div>
