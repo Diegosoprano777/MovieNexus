@@ -15,6 +15,24 @@
     title="Las más Populares" 
     [movies]="popularMovies()">
   </app-movie-slider>
+
+  <section class="catalog-section">
+    <h2 class="section-title">Explorar catálogo</h2>
+    
+    <div class="movies-grid">
+      @for (movie of catalogMovies(); track movie.id) {
+        <app-movie-card [movie]="movie"></app-movie-card>
+      }
+    </div>
+
+    <!-- El Ancla: Cuando este div entra en pantalla, se cargan más películas -->
+    <div #infiniteAnchor class="infinite-anchor">
+      @if (isFetchingNextPage()) {
+        <div class="infinite-spinner"></div>
+        <span>Cargando más películas...</span>
+      }
+    </div>
+  </section>
 </div>
 
 @if (error()) {
