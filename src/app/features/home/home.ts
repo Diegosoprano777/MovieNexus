@@ -25,36 +25,45 @@ export class HomeComponent implements OnInit, AfterViewInit {
   featuredMovie = signal<Movie | null>(null);
   trendingMovies = signal<Movie[]>([]);
   popularMovies = signal<Movie[]>([]);
-  
+
   // Estado para el catálogo paginado y scroll infinito
   catalogMovies = signal<Movie[]>([]);
   currentPage = signal(1);
   isFetchingNextPage = signal(false);
 
+  // Señales de carga independientes para cada slider
+  isLoadingTrending = signal(true);
+  isLoadingPopular = signal(true);
   isLoading = signal(true);
   error = signal<string | null>(null);
 
   ngOnInit(): void {
     console.log('🏠 Home inicializado. Cargando contenido...');
-    
+
     // 1. Pedimos las tendencias
     this.movieService.getTrendingMovies().subscribe({
       next: (data) => {
         if (data.results.length > 0) {
           this.featuredMovie.set(data.results[0]); // Ponemos la #1 como Destacada
-          this.trendingMovies.set(data.results); // Guardamos la lista completa para el Slider
+          this.trendingMovies.set(data.results);   // Guardamos la lista completa para el Slider
         }
+        this.isLoadingTrending.set(false);
+      },
+      error: () => {
+        this.isLoadingTrending.set(false);
       }
     });
 
     // 2. Pedimos las populares para el slider
     this.movieService.getPopularMovies().subscribe({
       next: (data) => {
-        this.popularMovies.set(data.results); // Guardamos la lista de populares para el slider
+        this.popularMovies.set(data.results);
+        this.isLoadingPopular.set(false);
         this.isLoading.set(false);
       },
       error: () => {
         this.error.set('Error al cargar las películas.');
+        this.isLoadingPopular.set(false);
         this.isLoading.set(false);
       }
     });

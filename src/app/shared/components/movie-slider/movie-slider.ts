@@ -14,4 +14,5 @@ import { SkeletonCard } from '../skeleton-card/skeleton-card';
 export class MovieSlider {
   @Input({ required: true }) movies: Movie[] = [];
   @Input() title: string = '';
+  @Input() isLoading: boolean = false;
 }

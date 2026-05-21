@@ -8,12 +8,14 @@
   <!-- Pasamos los datos de las Signals a los componentes hijos -->
   <app-movie-slider 
     title="Tendencias de Hoy" 
-    [movies]="trendingMovies()">
+    [movies]="trendingMovies()"
+    [isLoading]="isLoadingTrending()">
   </app-movie-slider>
 
   <app-movie-slider 
     title="Las más Populares" 
-    [movies]="popularMovies()">
+    [movies]="popularMovies()"
+    [isLoading]="isLoadingPopular()">
   </app-movie-slider>
 
   <section class="catalog-section">
