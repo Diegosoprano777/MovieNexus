@@ -5,11 +5,13 @@ import { HeroComponent } from './components/hero/hero'; // Importamos el Hero
 import { MovieSlider } from '../../shared/components/movie-slider/movie-slider'; // Agregamos MovieSlider a las importaciones
 import { MovieCard } from '../../shared/components/movie-card/movie-card'; // Importamos MovieCard para la grilla del catálogo
 import { Movie } from '../../core/models/movie.model';
+import { SkeletonCard } from '../../shared/components/skeleton-card/skeleton-card';
+import { SkeletonHero } from '../../shared/components/skeleton-hero/skeleton-hero';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, HeroComponent, MovieSlider, MovieCard],
+  imports: [CommonModule, HeroComponent, MovieSlider, MovieCard, SkeletonCard, SkeletonHero],
   templateUrl: './home.html',
   styleUrl: './home.css'
 })

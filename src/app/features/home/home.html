@@ -1,7 +1,7 @@
 @if (featuredMovie(); as movie) {
   <app-hero [movie]="movie"></app-hero>
 } @else {
-  <div class="loading-hero"></div>
+  <app-skeleton-hero></app-skeleton-hero>
 }
 
 <div class="home-sections">
@@ -22,6 +22,10 @@
     <div class="movies-grid">
       @for (movie of catalogMovies(); track movie.id) {
         <app-movie-card [movie]="movie"></app-movie-card>
+      } @empty {
+        @for (i of [1,2,3,4,5,6,7,8,9,10]; track i) {
+          <app-skeleton-card></app-skeleton-card>
+        }
       }
     </div>
 
