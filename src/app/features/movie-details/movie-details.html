@@ -7,6 +7,13 @@
     </div>
 
     <div class="content-wrapper">
+      <!-- Añadimos [style.view-transition-name] a la imagen del póster -->
+      <img
+        [src]="'https://image.tmdb.org/t/p/w500' + data.details.poster_path"
+        [alt]="data.details.title"
+        class="poster-img"
+        [style.view-transition-name]="'movie-poster-' + data.details.id"
+      >
       <h1 class="movie-title">{{ data.details.title }}</h1>
       
       <!-- Mostrar Géneros -->

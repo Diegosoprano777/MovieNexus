@@ -134,3 +134,18 @@ main {
     background-position: 200% 0;
   }
 }
+
+/* ============================================================
+   VIEW TRANSITIONS API CUSTOMIZATION
+   ============================================================ */
+
+/* Hacemos que todas las transiciones sean un poco más lentas y fluidas para apreciarlas */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.4s;
+}
+
+::view-transition-group(*) {
+  animation-duration: 0.4s;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
