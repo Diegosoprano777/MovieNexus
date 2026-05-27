@@ -5,12 +5,13 @@
   </div>
 
   @if (favorites().length === 0) {
-    <div class="empty-state">
-      <div class="empty-icon">💔</div>
-      <h2>No tienes favoritos aún</h2>
-      <p>Explora nuestras películas y presiona el ícono del corazón para añadirlas a tu colección.</p>
-      <a routerLink="/" class="explore-btn">Explorar Películas</a>
-    </div>
+    <app-empty-state
+      icon="❤️"
+      title="Aún no tienes favoritos"
+      message="Explora el catálogo y guarda las películas que más te gusten."
+      actionText="Explorar Películas"
+      actionLink="/home">
+    </app-empty-state>
   } @else {
     <div class="movies-grid">
       @for (movie of favorites(); track movie.id) {
@@ -19,3 +20,4 @@
     </div>
   }
 </div>
+
