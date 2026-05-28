@@ -4,12 +4,12 @@
   left: 0;
   width: 100%;
   z-index: 1000;
-  background: rgba(15, 23, 42, 0.75);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(5, 2, 18, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(157, 78, 221, 0.15);
   padding: 1rem 0;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4), 0 1px 15px rgba(157, 78, 221, 0.05);
 }
 
 .navbar-content {
@@ -31,9 +31,10 @@
 }
 
 .highlight {
-  background: linear-gradient(135deg, #38bdf8 0%, #3b82f6 100%);
+  background: var(--grad-main);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .nav-links {
@@ -66,10 +67,10 @@
   left: 0;
   width: 0;
   height: 2px;
-  background: linear-gradient(90deg, #38bdf8, #3b82f6);
+  background: var(--grad-main);
   border-radius: 2px;
   transition: width 0.3s ease;
-  box-shadow: 0 0 8px rgba(56, 189, 248, 0.6);
+  box-shadow: 0 0 8px rgba(0, 229, 255, 0.5);
 }
 
 .nav-links a:hover::after, .nav-links a.active::after {
@@ -121,7 +122,7 @@
   width: 16px;
   height: 16px;
   border: 2px solid rgba(255, 255, 255, 0.2);
-  border-top-color: #e50914;
+  border-top-color: var(--accent);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }

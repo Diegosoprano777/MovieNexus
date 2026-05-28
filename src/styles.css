@@ -1,18 +1,18 @@
 :root {
-  /* Colores Core */
-  --bg-color: #020617;     /* Fondo más profundo */
-  --bg-accent: #0f172a;
-  --primary: #38bdf8;
-  --primary-glow: rgba(56, 189, 248, 0.3);
-  --accent: #f43f5e;
+  /* Colores Core - Estilo HBO Max (Max) */
+  --bg-color: #050212;     /* Fondo negro espacial con tinte violeta */
+  --bg-accent: #0f0b24;    /* Acento violeta oscuro */
+  --primary: #9d4edd;      /* Púrpura/violeta principal */
+  --primary-glow: rgba(157, 78, 221, 0.35);
+  --accent: #00e5ff;       /* Cian eléctrico */
   
   /* Mantengo colores de texto que usa el resto de tu app */
   --text-main: #f8fafc;
   --text-muted: #94a3b8;
 
-  /* Gradientes Premium */
-  --grad-main: linear-gradient(135deg, var(--primary), #818cf8);
-  --grad-surface: linear-gradient(to bottom, rgba(255,255,255,0.05), transparent);
+  /* Gradientes Premium estilo HBO Max / Max */
+  --grad-main: linear-gradient(90deg, #00e5ff 0%, #7b2cbf 100%);
+  --grad-surface: linear-gradient(to bottom, rgba(255,255,255,0.03), transparent);
 
   /* Espaciado y Radio (Consistencia) */
   --spacing-sm: 0.5rem;
@@ -26,14 +26,14 @@
   --space-xl: 4rem;
 
   /* Profundidad */
-  --glass: rgba(15, 23, 42, 0.7);
-  --border-glass: 1px solid rgba(255, 255, 255, 0.1);
+  --glass: rgba(5, 2, 18, 0.75);
+  --border-glass: 1px solid rgba(255, 255, 255, 0.08);
   
   /* Transiciones y Sombras originales (útiles para la app) */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
-  --transition-fast: 0.2s ease;
+  --transition-fast: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-slow: 0.4s ease;
 }
 
@@ -114,12 +114,12 @@ main {
 
 /* --- Skeleton Shimmer Animation --- */
 .skeleton-base {
-  background: #1e293b;
+  background: #120e2e;
   background-image: linear-gradient(
     90deg,
     rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.05) 20%,
-    rgba(255, 255, 255, 0.15) 60%,
+    rgba(255, 255, 255, 0.03) 20%,
+    rgba(255, 255, 255, 0.08) 60%,
     rgba(255, 255, 255, 0) 100%
   );
   background-size: 200% 100%;
