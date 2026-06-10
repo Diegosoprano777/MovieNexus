@@ -1,78 +1,173 @@
-@if (movieData$ | async; as data) {
+<!-- ─── Loading skeleton ──────────────────────────────────────────────────── -->
+@if (isLoading()) {
+  <div class="details-loading">
+    <div class="skeleton-backdrop"></div>
+    <div class="skeleton-content">
+      <div class="skeleton-poster"></div>
+      <div class="skeleton-info">
+        <div class="skeleton-bar wide"></div>
+        <div class="skeleton-bar medium"></div>
+        <div class="skeleton-bar short"></div>
+        <div class="skeleton-bar wide"></div>
+        <div class="skeleton-bar medium"></div>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- ─── Error state ────────────────────────────────────────────────────────── -->
+@if (error()) {
+  <div class="error-state">
+    <span class="error-icon">⚠️</span>
+    <h2>Algo salió mal</h2>
+    <p>{{ error() }}</p>
+    <a routerLink="/" class="back-btn">← Volver al inicio</a>
+  </div>
+}
+
+<!-- ─── Contenido principal ───────────────────────────────────────────────── -->
+@if (!isLoading() && !error() && movie(); as m) {
   <div class="details-container">
-    <!-- Imagen de fondo (Backdrop) -->
+
+    <!-- Backdrop con parallax visual -->
     <div class="backdrop-wrapper">
-      <img [src]="getBackdropUrl(data.details.backdrop_path)" class="backdrop-image">
+      <img [src]="getBackdropUrl(m.backdrop_path)" [alt]="m.title" class="backdrop-image">
       <div class="backdrop-overlay"></div>
     </div>
 
-    <div class="content-wrapper">
-      <!-- Añadimos [style.view-transition-name] a la imagen del póster -->
+    <!-- ─── Hero section ─────────────────────────────────────────────────── -->
+    <div class="hero-section">
+      <!-- Póster -->
       <img
-        [src]="'https://image.tmdb.org/t/p/w500' + data.details.poster_path"
-        [alt]="data.details.title"
+        [src]="getPosterUrl(m.poster_path)"
+        [alt]="m.title"
         class="poster-img"
-        [style.view-transition-name]="'movie-poster-' + data.details.id"
+        [style.view-transition-name]="'movie-poster-' + m.id"
       >
-      <h1 class="movie-title">{{ data.details.title }}</h1>
-      
-      <!-- Mostrar Géneros -->
-      <div class="genres">
-        @for (genre of data.details.genres; track genre.id) {
-          <span class="genre-tag">{{ genre.name }}</span>
+
+      <!-- Info principal -->
+      <div class="hero-info">
+
+        <!-- Géneros -->
+        <div class="genres">
+          @for (genre of m.genres; track genre.id) {
+            <span class="genre-tag">{{ genre.name }}</span>
+          }
+        </div>
+
+        <h1 class="movie-title">{{ m.title }}</h1>
+
+        @if (m.title !== m.original_title) {
+          <p class="original-title">{{ m.original_title }}</p>
         }
+
+        <!-- Meta datos: año · duración · idioma -->
+        <div class="meta-row">
+          <span class="meta-item">
+            📅 {{ m.release_date | date:'yyyy' }}
+          </span>
+          @if (m.runtime) {
+            <span class="meta-divider">·</span>
+            <span class="meta-item">🕐 {{ formatRuntime(m.runtime) }}</span>
+          }
+          <span class="meta-divider">·</span>
+          <span class="meta-item lang-badge">{{ m.original_language | uppercase }}</span>
+        </div>
+
+        <!-- Rating visual -->
+        <div class="rating-block">
+          <div class="rating-circle">
+            <svg viewBox="0 0 36 36" class="rating-svg">
+              <path class="rating-track" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+              <path class="rating-fill"
+                [style.stroke-dasharray]="(m.vote_average * 10) + ', 100'"
+                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+            </svg>
+            <span class="rating-number">{{ m.vote_average | number:'1.1-1' }}</span>
+          </div>
+          <div class="rating-info">
+            <span class="rating-label">Puntuación</span>
+            <span class="rating-votes">{{ formatVoteCount(m.vote_count) }} votos</span>
+          </div>
+        </div>
+
+        <!-- Sinopsis -->
+        <section class="synopsis-section">
+          <h2 class="section-label">Sinopsis</h2>
+          <p class="overview">
+            {{ m.overview || 'Sinopsis no disponible para este título.' }}
+          </p>
+        </section>
+
+        <!-- Acciones -->
+        <div class="action-row">
+          <button
+            class="fav-btn"
+            [class.active]="isFavorite()"
+            (click)="toggleFavorite()"
+            [attr.aria-label]="isFavorite() ? 'Quitar de favoritos' : 'Añadir a favoritos'"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z"/>
+            </svg>
+            {{ isFavorite() ? 'En favoritos' : 'Añadir a favoritos' }}
+          </button>
+
+          <button class="back-btn-glass" onclick="history.back()">
+            ← Volver
+          </button>
+        </div>
+
       </div>
+    </div>
 
-      <section class="movie-info">
-        <h2>Sinopsis</h2>
-        <p class="overview">{{ data.details.overview }}</p>
-      </section>
-
-      <!-- CARGA DIFERIDA: El Tráiler (on viewport) -->
+    <!-- ─── Tráiler (carga diferida con @defer) ───────────────────────────── -->
+    <div class="content-sections">
       <section class="trailer-section">
-        <h2>Tráiler Oficial</h2>
+        <h2 class="section-title">🎬 Tráiler Oficial</h2>
 
         @defer (on viewport) {
-          <!-- Este componente solo se descarga cuando esta sección entra en pantalla -->
-          <app-movie-trailer [movieId]="data.details.id"></app-movie-trailer>
+          <app-movie-trailer [movieId]="m.id" />
         } @placeholder (minimum 500ms) {
-          <!-- Lo que se muestra ANTES de que se cumpla la condición -->
           <div class="trailer-placeholder">
-            <p>🎬 Haz scroll para ver el tráiler...</p>
+            <div class="play-hint">▶ Haz scroll para cargar el tráiler</div>
           </div>
         } @loading {
-          <!-- Lo que se muestra DURANTE la descarga del componente -->
-          <div class="defer-spinner">Cargando reproductor...</div>
+          <div class="defer-spinner-wrap">
+            <div class="defer-spinner"></div>
+            <span>Cargando reproductor...</span>
+          </div>
         } @error {
-          <!-- Si la red falla al intentar descargar el componente -->
           <p class="defer-error">Error al cargar el reproductor de video.</p>
         }
       </section>
 
-      <!-- CARGA DIFERIDA: El Elenco (on viewport) -->
-      <section class="movie-cast">
-        <h2>Elenco Principal</h2>
+      <!-- ─── Elenco (carga diferida) ─────────────────────────────────────── -->
+      @if (credits(); as c) {
+        <section class="cast-section">
+          <h2 class="section-title">🎭 Elenco Principal</h2>
 
-        @defer (on viewport) {
-          <div class="cast-track">
-            @for (actor of data.credits.cast | slice:0:15; track actor.id) {
-              <app-cast-card [actor]="actor"></app-cast-card>
-            } @empty {
-              <p>No hay información del elenco.</p>
-            }
-          </div>
-        } @placeholder {
-          <div class="cast-placeholder">
-            <p>🎭 Haz scroll para ver el elenco...</p>
-          </div>
-        } @loading {
-          <div class="defer-spinner">Cargando elenco...</div>
-        }
-      </section>
-
-      <button class="back-button" onclick="history.back()">← Volver</button>
+          @defer (on viewport) {
+            <div class="cast-track">
+              @for (actor of c.cast | slice:0:15; track actor.id) {
+                <app-cast-card [actor]="actor" />
+              } @empty {
+                <p class="no-cast">No hay información del elenco disponible.</p>
+              }
+            </div>
+          } @placeholder {
+            <div class="cast-placeholder">
+              <p>🎭 Haz scroll para ver el elenco...</p>
+            </div>
+          } @loading {
+            <div class="defer-spinner-wrap">
+              <div class="defer-spinner"></div>
+              <span>Cargando elenco...</span>
+            </div>
+          }
+        </section>
+      }
     </div>
+
   </div>
-} @else {
-  <div class="loading-state">Cargando detalles increíbles...</div>
 }

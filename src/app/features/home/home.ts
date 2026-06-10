@@ -15,7 +15,7 @@ import { SkeletonHero } from '../../shared/components/skeleton-hero/skeleton-her
   templateUrl: './home.html',
   styleUrl: './home.css'
 })
-export class HomeComponent implements OnInit, AfterViewInit {
+export class Home implements OnInit, AfterViewInit {
   private movieService = inject(MovieService);
   private platformId = inject(PLATFORM_ID);
 

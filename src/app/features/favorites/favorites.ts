@@ -12,7 +12,7 @@ import { FavoritesService } from '../../core/services/favorites.service';
   templateUrl: './favorites.html',
   styleUrl: './favorites.css'
 })
-export class FavoritesComponent {
+export class Favorites {
   private favoritesService = inject(FavoritesService);
   
   // Exponemos la signal a la plantilla

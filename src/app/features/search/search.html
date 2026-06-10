@@ -1,0 +1,83 @@
+<section class="search-page">
+
+  <!-- ─── Hero de búsqueda ───────────────────────────────────────────────── -->
+  <div class="search-hero">
+    <h1 class="search-heading">
+      Descubre tu próxima
+      <span class="heading-accent">película favorita</span>
+    </h1>
+    <p class="search-sub">Busca entre millones de títulos en tiempo real</p>
+
+    <div class="search-bar-wrapper">
+      <!-- Ícono lupa -->
+      <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"/>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+
+      <input
+        id="search-input"
+        class="search-bar"
+        type="text"
+        placeholder="Ej: Inception, The Batman, Dune..."
+        autocomplete="off"
+        [value]="searchQuery()"
+        (input)="onInput($event)"
+      >
+
+      <!-- Spinner integrado en la barra -->
+      @if (isSearching()) {
+        <div class="bar-spinner"></div>
+      }
+
+      <!-- Botón limpiar -->
+      @if (searchQuery().length > 0) {
+        <button class="clear-btn" (click)="clearSearch()" aria-label="Limpiar búsqueda">✕</button>
+      }
+    </div>
+
+    <!-- Conteo de resultados -->
+    @if (!isSearching() && results().length > 0) {
+      <p class="results-count">
+        <span class="count-number">{{ results().length }}</span> resultados para
+        <strong>"{{ searchQuery() }}"</strong>
+      </p>
+    }
+  </div>
+
+  <!-- ─── Grid de resultados ────────────────────────────────────────────── -->
+  @if (results().length > 0) {
+    <div class="results-grid">
+      @for (movie of results(); track movie.id) {
+        <app-movie-card [movie]="movie" />
+      }
+    </div>
+  }
+
+  <!-- ─── Estado vacío ──────────────────────────────────────────────────── -->
+  @if (isEmpty()) {
+    <app-empty-state
+      icon="🎬"
+      title="Sin resultados"
+      [message]="'No encontramos nada para «' + searchQuery() + '». Prueba con otro título.'"
+      actionText="Ir al inicio"
+      actionLink="/"
+    />
+  }
+
+  <!-- ─── Estado inicial (antes de escribir) ───────────────────────────── -->
+  @if (!hasSearched() && !isSearching() && searchQuery().length < 2) {
+    <div class="search-initial">
+      <div class="category-chips">
+        <span class="chip-label">Tendencias:</span>
+        <span class="chip">🔥 Avengers</span>
+        <span class="chip">🚀 Dune</span>
+        <span class="chip">🦇 Batman</span>
+        <span class="chip">🌌 Interstellar</span>
+        <span class="chip">🤖 Terminator</span>
+      </div>
+    </div>
+  }
+
+</section>
