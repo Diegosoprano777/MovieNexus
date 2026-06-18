@@ -6,13 +6,14 @@ import { Movie } from '../../core/models/movie.model';
 import { CastCard } from '../../shared/components/cast-card/cast-card';
 import { CreditsResponse } from '../../core/models/cast.model';
 import { MovieTrailer } from './components/movie-trailer/movie-trailer';
+import { MovieComments } from './components/movie-comments/movie-comments';
 import { FavoritesService } from '../../core/services/favorites.service';
 import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-movie-details',
   standalone: true,
-  imports: [CommonModule, RouterLink, CastCard, MovieTrailer],
+  imports: [CommonModule, RouterLink, CastCard, MovieTrailer, MovieComments],
   templateUrl: './movie-details.html',
   styleUrl: './movie-details.css'
 })

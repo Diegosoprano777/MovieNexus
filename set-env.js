@@ -1,10 +1,19 @@
 const fs = require('fs');
 
-// process.env.API_KEY leerá la variable que configuraste en Vercel
+const apiKey = process.env.API_KEY || 'c799d8b88696008580f33a7694faf85e';
+
 const envConfigFile = `export const environment = {
   production: true,
   baseUrl: 'https://api.themoviedb.org/3',
-  apiKey: '${process.env.API_KEY}',
+  apiKey: '${apiKey}',
+  imgPath: 'https://image.tmdb.org/t/p'
+};
+`;
+
+const envDevConfigFile = `export const environment = {
+  production: false,
+  baseUrl: 'https://api.themoviedb.org/3',
+  apiKey: '${apiKey}',
   imgPath: 'https://image.tmdb.org/t/p'
 };
 `;
@@ -13,6 +22,7 @@ const targetFolderPath = './src/environments';
 if (!fs.existsSync(targetFolderPath)) {
   fs.mkdirSync(targetFolderPath, { recursive: true });
 }
-const targetPath = './src/environments/environment.ts';
-fs.writeFileSync(targetPath, envConfigFile);
-console.log('✅ Archivo environment.ts generado correctamente en Vercel.');
+
+fs.writeFileSync(`${targetFolderPath}/environment.ts`, envConfigFile);
+fs.writeFileSync(`${targetFolderPath}/environment.development.ts`, envDevConfigFile);
+console.log('✅ Archivos de entorno (production y development) generados correctamente.');
