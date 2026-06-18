@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CommentService } from '../../../../core/services/comment.service';
@@ -13,6 +13,7 @@ import { Comment } from '../../../../core/models/comment.model';
 })
 export class MovieComments implements OnInit {
   private commentService = inject(CommentService);
+  private cdr = inject(ChangeDetectorRef);
 
   @Input() movieId!: number; // Recibe el ID desde la pantalla de detalles
 
@@ -45,10 +46,12 @@ export class MovieComments implements OnInit {
           (a, b) => new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime()
         );
         this.loading = false;
+        this.cdr.detectChanges();
       },
       error: (err) => {
         this.error = 'No se pudieron cargar los comentarios. Asegúrate de que la API está activa.';
         this.loading = false;
+        this.cdr.detectChanges();
       }
     });
   }
@@ -65,6 +68,8 @@ export class MovieComments implements OnInit {
   submitComment(): void {
     if (!this.authorName.trim() || !this.commentText.trim()) return;
     this.submitting = true;
+    this.cdr.detectChanges();
+    
     this.commentService.addComment(
       this.itemId,
       this.authorName.trim(),
@@ -79,11 +84,16 @@ export class MovieComments implements OnInit {
         this.showForm = false;
         this.submitting = false;
         this.successMessage = '¡Comentario publicado exitosamente! ✅';
-        setTimeout(() => this.successMessage = '', 3000);
+        this.cdr.detectChanges();
+        setTimeout(() => {
+          this.successMessage = '';
+          this.cdr.detectChanges();
+        }, 3000);
       },
       error: () => {
         this.submitting = false;
         this.error = 'Error al publicar. Reintenta de nuevo.';
+        this.cdr.detectChanges();
       }
     });
   }
