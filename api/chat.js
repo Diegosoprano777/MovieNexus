@@ -63,8 +63,8 @@ Reglas obligatorias:
   }));
 
   try {
-    // Usamos el modelo gemini-2.5-flash y pasamos la API key por Query Params
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+    // Usamos el modelo gemini-3.1-flash-lite y pasamos la API key por Query Params
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent?key=${apiKey}`;
 
     const response = await fetch(url, {
       method: 'POST',
