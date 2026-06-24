@@ -23,6 +23,22 @@ export class ChatWidget {
   // Señal local para enlazar el texto de entrada del usuario
   readonly userInput = signal<string>('');
 
+  // Sugerencias de inicio rápido para el chat de Nexus AI
+  readonly chatSuggestions = [
+    { text: '🎬 Recomiéndame ciencia ficción', query: '¿Qué buenas películas de ciencia ficción me recomiendas?' },
+    { text: '🍿 Películas en pareja', query: 'Recomiéndame películas divertidas o románticas para ver en pareja' },
+    { text: '🧠 Con finales inesperados', query: 'Dime películas de suspenso psicológico con giros inesperados' },
+    { text: '⭐ Lo mejor de Nolan', query: '¿Cuáles son las películas mejor valoradas de Christopher Nolan?' }
+  ];
+
+  /**
+   * Envía una sugerencia de chat de manera automática.
+   */
+  async selectChatSuggestion(query: string): Promise<void> {
+    if (this.geminiService.loading()) return;
+    await this.geminiService.sendMessage(query);
+  }
+
   constructor() {
     // Scroll automático al final de la ventana cada vez que cambia el historial
     effect(() => {

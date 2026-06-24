@@ -23,6 +23,19 @@ export class Search {
   // Signal derivada: ¿hay query pero sin resultados?
   isEmpty = computed(() => this.hasSearched() && !this.isSearching() && this.results().length === 0);
 
+  // Sugerencias de tendencias para búsqueda rápida
+  readonly suggestions = [
+    { label: '🔥 Avengers', query: 'Avengers' },
+    { label: '🚀 Dune', query: 'Dune' },
+    { label: '🦇 Batman', query: 'Batman' },
+    { label: '🌌 Interstellar', query: 'Interstellar' },
+    { label: '🤖 Terminator', query: 'Terminator' }
+  ];
+
+  selectSuggestion(query: string): void {
+    this.searchQuery.set(query);
+  }
+
   constructor() {
     // Effect con debounce: reacciona cada vez que searchQuery cambia
     effect((onCleanup) => {

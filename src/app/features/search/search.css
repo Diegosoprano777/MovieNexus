@@ -172,8 +172,9 @@
   border-radius: 20px;
   color: #a5b4fc;
   font-size: 0.9rem;
-  cursor: default;
-  transition: background 0.2s, transform 0.2s;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.2s, transform 0.2s, border-color 0.2s;
 }
 
 .chip:hover {

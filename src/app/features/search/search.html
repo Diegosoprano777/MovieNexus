@@ -71,11 +71,11 @@
     <div class="search-initial">
       <div class="category-chips">
         <span class="chip-label">Tendencias:</span>
-        <span class="chip">🔥 Avengers</span>
-        <span class="chip">🚀 Dune</span>
-        <span class="chip">🦇 Batman</span>
-        <span class="chip">🌌 Interstellar</span>
-        <span class="chip">🤖 Terminator</span>
+        @for (sug of suggestions; track sug.query) {
+          <button type="button" class="chip" (click)="selectSuggestion(sug.query)">
+            {{ sug.label }}
+          </button>
+        }
       </div>
     </div>
   }

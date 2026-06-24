@@ -117,6 +117,21 @@
         </div>
       }
 
+      <!-- Sugerencias de inicio rápido -->
+      @if (geminiService.messages().length === 1 && !geminiService.loading()) {
+        <div class="chat-suggestions-grid">
+          @for (sug of chatSuggestions; track sug.text) {
+            <button 
+              type="button" 
+              class="chat-suggestion-card" 
+              (click)="selectChatSuggestion(sug.query)"
+            >
+              {{ sug.text }}
+            </button>
+          }
+        </div>
+      }
+
       <!-- Indicador de Carga (Typing Indicator) -->
       @if (geminiService.loading()) {
         <div class="message-wrapper">

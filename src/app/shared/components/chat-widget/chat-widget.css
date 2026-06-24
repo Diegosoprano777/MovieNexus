@@ -546,6 +546,42 @@
   transform: translate(1px, -0.5px);
 }
 
+/* Sugerencias de inicio de chat */
+.chat-suggestions-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin-top: auto;
+  margin-bottom: 0.5rem;
+  padding: 0 0.5rem;
+  animation: bubble-fade 0.3s ease-out;
+}
+
+.chat-suggestion-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 0.65rem 0.75rem;
+  font-size: 0.8rem;
+  color: var(--text-main);
+  text-align: left;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  font-family: inherit;
+  line-height: 1.35;
+}
+
+.chat-suggestion-card:hover {
+  background: rgba(99, 102, 241, 0.12);
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 229, 255, 0.15);
+}
+
+.chat-suggestion-card:active {
+  transform: translateY(0);
+}
+
 /* Soporte móvil */
 @media (max-width: 480px) {
   .chat-window {
