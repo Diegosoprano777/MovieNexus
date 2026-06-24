@@ -1,0 +1,164 @@
+<!-- Botón Flotante del Chat -->
+<button 
+  class="chat-toggle-btn" 
+  [class.active]="isOpen()" 
+  (click)="toggleChat()"
+  aria-label="Abrir chat de Nexus AI"
+>
+  @if (!isOpen()) {
+    <!-- Icono de Chat/Robot SVG -->
+    <svg class="icon-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 2C6.47715 2 2 6.47715 2 12C2 14.1018 2.65175 16.0507 3.76678 17.6568L2.03964 21.1111C1.86431 21.4618 2.1462 21.8745 2.53597 21.8211L6.50503 21.2774C8.16335 21.7454 9.94056 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M8 11H8.01M12 11H12.01M16 11H16.01" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M9 15C9 15 10.5 16.5 12 16.5C13.5 16.5 15 15 15 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  } @else {
+    <!-- Icono de Cerrar "X" SVG -->
+    <svg class="icon-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  }
+  <!-- Notificación / Glow de atención (se muestra cuando está cerrado) -->
+  @if (!isOpen()) {
+    <span class="pulse-badge"></span>
+  }
+</button>
+
+<!-- Ventana del Chat Flotante -->
+@if (isOpen()) {
+  <div class="chat-window">
+    
+    <!-- Cabecera -->
+    <header class="chat-header">
+      <div class="chat-header-info">
+        <div class="chat-avatar-container">
+          <div class="chat-avatar-status"></div>
+          <!-- Avatar decorativo con inicial -->
+          <span class="avatar-letter">N</span>
+        </div>
+        <div class="chat-header-text">
+          <h3>Nexus AI</h3>
+          <span class="status-indicator">En línea <span class="green-dot"></span></span>
+        </div>
+      </div>
+      
+      <div class="chat-header-actions">
+        <!-- Limpiar historial -->
+        <button class="header-btn" (click)="handleClear()" title="Limpiar conversación">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"></polyline>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+          </svg>
+        </button>
+        <!-- Cerrar -->
+        <button class="header-btn" (click)="toggleChat()" title="Cerrar chat">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Cuerpo de Mensajes -->
+    <div class="chat-body" #scrollContainer>
+      @for (msg of geminiService.messages(); track $index) {
+        <div class="message-wrapper" [class.user-wrapper]="msg.role === 'user'">
+          
+          <!-- Avatar del Asistente (solo para la IA) -->
+          @if (msg.role === 'assistant') {
+            <div class="assistant-avatar">🤖</div>
+          }
+
+          <div class="message-content">
+            <div 
+              class="message-bubble" 
+              [class.user-bubble]="msg.role === 'user'"
+              [class.assistant-bubble]="msg.role === 'assistant'"
+              [innerHTML]="parseMarkdown(msg.content)"
+            ></div>
+
+            <!-- Carrusel de Películas Recomendadas -->
+            @if (msg.role === 'assistant' && msg.movies && msg.movies.length > 0) {
+              <div class="movies-carousel-section">
+                <span class="carousel-title">Películas Sugeridas:</span>
+                <div class="movies-carousel">
+                  @for (movie of msg.movies; track movie.id) {
+                    <a 
+                      [routerLink]="['/movie', movie.id]" 
+                      class="mini-movie-card"
+                      (click)="toggleChat()"
+                      title="Ver detalles de {{ movie.title }}"
+                    >
+                      <div class="mini-card-poster">
+                        <img 
+                          [src]="movie.poster_path ? 'https://image.tmdb.org/t/p/w154' + movie.poster_path : 'assets/no-poster.png'" 
+                          [alt]="movie.title"
+                          loading="lazy"
+                        >
+                        @if (movie.vote_average) {
+                          <span class="mini-card-rating">
+                            ⭐ {{ movie.vote_average | number:'1.1-1' }}
+                          </span>
+                        }
+                      </div>
+                      <div class="mini-card-info">
+                        <span class="mini-card-title">{{ movie.title }}</span>
+                        @if (movie.release_date) {
+                          <span class="mini-card-year">{{ movie.release_date | date:'yyyy' }}</span>
+                        }
+                      </div>
+                    </a>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Indicador de Carga (Typing Indicator) -->
+      @if (geminiService.loading()) {
+        <div class="message-wrapper">
+          <div class="assistant-avatar">🤖</div>
+          <div class="message-content">
+            <div class="message-bubble assistant-bubble typing-bubble">
+              <span class="dot"></span>
+              <span class="dot"></span>
+              <span class="dot"></span>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Pie de Página (Formulario de Entrada) -->
+    <footer class="chat-footer">
+      <form (submit)="handleSend(); $event.preventDefault()" class="chat-input-form">
+        <input 
+          type="text" 
+          name="userInput"
+          [ngModel]="userInput()" 
+          (ngModelChange)="userInput.set($event)"
+          placeholder="Pregúntale a Nexus AI..."
+          class="chat-input"
+          [disabled]="geminiService.loading()"
+          autocomplete="off"
+          required
+        >
+        <button 
+          type="submit" 
+          class="chat-send-btn" 
+          [disabled]="!userInput().trim() || geminiService.loading()"
+          aria-label="Enviar mensaje"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="22" y1="2" x2="11" y2="13"></line>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+          </svg>
+        </button>
+      </form>
+    </footer>
+
+  </div>
+}
