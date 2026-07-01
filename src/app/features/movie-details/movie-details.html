@@ -123,6 +123,66 @@
 
     <!-- ─── Tráiler (carga diferida con @defer) ───────────────────────────── -->
     <div class="content-sections">
+      <!-- ─── Proveedores de Streaming ────────────────────────────────────── -->
+      @if (watchProviders(); as providers) {
+        <section class="providers-section">
+          <h2 class="section-title">📺 Dónde ver</h2>
+          
+          <div class="providers-container">
+            <!-- Suscripción -->
+            @if (providers.flatrate && providers.flatrate.length > 0) {
+              <div class="provider-group">
+                <h3>Suscripción</h3>
+                <div class="provider-list">
+                  @for (p of providers.flatrate; track p.provider_id) {
+                    <div class="provider-item" [title]="p.provider_name">
+                      <img [src]="getProviderLogoUrl(p.logo_path)" [alt]="p.provider_name">
+                      <span>{{ p.provider_name }}</span>
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+
+            <!-- Compra -->
+            @if (providers.buy && providers.buy.length > 0) {
+              <div class="provider-group">
+                <h3>Comprar</h3>
+                <div class="provider-list">
+                  @for (p of providers.buy; track p.provider_id) {
+                    <div class="provider-item" [title]="p.provider_name">
+                      <img [src]="getProviderLogoUrl(p.logo_path)" [alt]="p.provider_name">
+                      <span>{{ p.provider_name }}</span>
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+
+            <!-- Renta -->
+            @if (providers.rent && providers.rent.length > 0) {
+              <div class="provider-group">
+                <h3>Rentar</h3>
+                <div class="provider-list">
+                  @for (p of providers.rent; track p.provider_id) {
+                    <div class="provider-item" [title]="p.provider_name">
+                      <img [src]="getProviderLogoUrl(p.logo_path)" [alt]="p.provider_name">
+                      <span>{{ p.provider_name }}</span>
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+          
+          @if ((!providers.flatrate || providers.flatrate.length === 0) &&
+               (!providers.buy || providers.buy.length === 0) &&
+               (!providers.rent || providers.rent.length === 0)) {
+            <p class="no-providers">No hay proveedores de streaming disponibles en tu región.</p>
+          }
+        </section>
+      }
+
       <section class="trailer-section">
         <h2 class="section-title">🎬 Tráiler Oficial</h2>
 

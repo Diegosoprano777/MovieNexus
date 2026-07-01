@@ -517,3 +517,85 @@
   margin-top: 2rem;
   font-size: 1rem;
 }
+
+/* ─── Streaming Providers (Glassmorphism & animations) ─── */
+.providers-section {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 2rem;
+  margin-bottom: 3rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.providers-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+  margin-top: 1rem;
+}
+
+.provider-group h3 {
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #94a3b8;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+}
+
+.provider-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.provider-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 1rem 0.5rem 0.6rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+}
+
+.provider-item img {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  object-fit: cover;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease;
+}
+
+.provider-item span {
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: #e2e8f0;
+}
+
+/* Micro-animations */
+.provider-item:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(129, 140, 248, 0.4);
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 8px 20px rgba(129, 140, 248, 0.15);
+}
+
+.provider-item:hover img {
+  transform: scale(1.1);
+}
+
+.no-providers {
+  color: #64748b;
+  font-style: italic;
+  font-size: 0.95rem;
+  margin-top: 0.5rem;
+}
+

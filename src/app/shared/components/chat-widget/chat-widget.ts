@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild, inject, signal, effect } from '@angular/core';
+import { Component, ElementRef, ViewChild, inject, signal, effect, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -12,7 +12,7 @@ import { GeminiService } from '../../../core/services/gemini.service';
   templateUrl: './chat-widget.html',
   styleUrl: './chat-widget.css'
 })
-export class ChatWidget {
+export class ChatWidget implements OnDestroy {
   protected readonly geminiService = inject(GeminiService);
   private readonly sanitizer = inject(DomSanitizer);
 
@@ -22,6 +22,11 @@ export class ChatWidget {
   readonly isOpen = signal<boolean>(false);
   // Señal local para enlazar el texto de entrada del usuario
   readonly userInput = signal<string>('');
+
+  // Señal y propiedades para reconocimiento de voz
+  isRecording = signal<boolean>(false);
+  private recognition: any = null;
+  private silenceTimeout: any = null;
 
   // Sugerencias de inicio rápido para el chat de Nexus AI
   readonly chatSuggestions = [
@@ -54,6 +59,8 @@ export class ChatWidget {
     this.isOpen.update(val => !val);
     if (this.isOpen()) {
       this.scrollToBottom();
+    } else {
+      this.stopRecording();
     }
   }
 
@@ -63,6 +70,9 @@ export class ChatWidget {
   async handleSend(): Promise<void> {
     const text = this.userInput().trim();
     if (!text || this.geminiService.loading()) return;
+
+    this.clearSilenceTimeout();
+    this.stopRecording();
 
     this.userInput.set(''); // Limpiar el input inmediatamente
     await this.geminiService.sendMessage(text);
@@ -135,5 +145,113 @@ export class ChatWidget {
         });
       }
     }, 100);
+  }
+
+  initSpeechRecognition(): void {
+    if (typeof window === 'undefined') return;
+
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      console.warn('SpeechRecognition no está soportado en este navegador.');
+      return;
+    }
+
+    this.recognition = new SpeechRecognition();
+    this.recognition.continuous = true;
+    this.recognition.interimResults = true;
+    this.recognition.lang = typeof navigator !== 'undefined' ? navigator.language : 'es-ES';
+
+    this.recognition.onstart = () => {
+      this.isRecording.set(true);
+    };
+
+    this.recognition.onresult = (event: any) => {
+      let interimTranscript = '';
+      let finalTranscript = '';
+
+      for (let i = event.resultIndex; i < event.results.length; ++i) {
+        if (event.results[i].isFinal) {
+          finalTranscript += event.results[i][0].transcript;
+        } else {
+          interimTranscript += event.results[i][0].transcript;
+        }
+      }
+
+      const transcript = finalTranscript || interimTranscript;
+      if (transcript.trim()) {
+        this.userInput.set(transcript);
+        this.resetSilenceTimeout();
+      }
+    };
+
+    this.recognition.onerror = (event: any) => {
+      console.error('Error de reconocimiento de voz:', event.error);
+      this.stopRecording();
+    };
+
+    this.recognition.onend = () => {
+      this.isRecording.set(false);
+      this.clearSilenceTimeout();
+    };
+  }
+
+  toggleRecording(): void {
+    if (typeof window === 'undefined') return;
+
+    if (!this.recognition) {
+      this.initSpeechRecognition();
+    }
+
+    if (!this.recognition) return;
+
+    if (this.isRecording()) {
+      this.stopRecording();
+    } else {
+      this.startRecording();
+    }
+  }
+
+  private startRecording(): void {
+    if (this.recognition && !this.isRecording()) {
+      this.userInput.set('');
+      try {
+        this.recognition.start();
+      } catch (err) {
+        console.error('Error al iniciar grabación:', err);
+      }
+    }
+  }
+
+  private stopRecording(): void {
+    if (this.recognition && this.isRecording()) {
+      try {
+        this.recognition.stop();
+      } catch (err) {
+        console.error('Error al detener grabación:', err);
+      }
+      this.isRecording.set(false);
+      this.clearSilenceTimeout();
+    }
+  }
+
+  private resetSilenceTimeout(): void {
+    this.clearSilenceTimeout();
+    this.silenceTimeout = setTimeout(() => {
+      if (this.userInput().trim() && this.isRecording()) {
+        this.stopRecording();
+        this.handleSend();
+      }
+    }, 600);
+  }
+
+  private clearSilenceTimeout(): void {
+    if (this.silenceTimeout) {
+      clearTimeout(this.silenceTimeout);
+      this.silenceTimeout = null;
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.stopRecording();
   }
 }

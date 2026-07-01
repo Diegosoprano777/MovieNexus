@@ -150,6 +150,23 @@
     <!-- Pie de Página (Formulario de Entrada) -->
     <footer class="chat-footer">
       <form (submit)="handleSend(); $event.preventDefault()" class="chat-input-form">
+        <!-- Botón de Micrófono -->
+        <button
+          type="button"
+          class="chat-mic-btn"
+          [class.recording]="isRecording()"
+          (click)="toggleRecording()"
+          [disabled]="geminiService.loading()"
+          [attr.aria-label]="isRecording() ? 'Detener dictado por voz' : 'Iniciar dictado por voz'"
+          [title]="isRecording() ? 'Escuchando... Haz clic para detener' : 'Dictar por voz'"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 1v10M19 8a7 7 0 0 1-14 0" />
+            <rect x="9" y="2" width="6" height="10" rx="3" fill="currentColor" stroke="none" />
+            <path d="M12 18v4M8 22h8" />
+          </svg>
+        </button>
+
         <input 
           type="text" 
           name="userInput"

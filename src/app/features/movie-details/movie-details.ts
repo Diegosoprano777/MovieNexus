@@ -2,13 +2,14 @@ import { Component, inject, Input, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MovieService } from '../../core/services/movie.service';
-import { Movie } from '../../core/models/movie.model';
+import { Movie, CountryProviders, WatchProvidersResponse } from '../../core/models/movie.model';
 import { CastCard } from '../../shared/components/cast-card/cast-card';
 import { CreditsResponse } from '../../core/models/cast.model';
 import { MovieTrailer } from './components/movie-trailer/movie-trailer';
 import { MovieComments } from './components/movie-comments/movie-comments';
 import { FavoritesService } from '../../core/services/favorites.service';
-import { forkJoin } from 'rxjs';
+import { forkJoin, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 @Component({
   selector: 'app-movie-details',
@@ -26,6 +27,7 @@ export class MovieDetails implements OnInit {
   // ─── Signals de estado ────────────────────────────────────────────────────
   movie    = signal<Movie | null>(null);
   credits  = signal<CreditsResponse | null>(null);
+  watchProviders = signal<CountryProviders | null>(null);
   isLoading = signal(true);
   error    = signal<string | null>(null);
 
@@ -37,12 +39,31 @@ export class MovieDetails implements OnInit {
 
     forkJoin({
       details: this.movieService.getMovieById(this.id),
-      credits: this.movieService.getMovieCredits(this.id)
+      credits: this.movieService.getMovieCredits(this.id),
+      providers: this.movieService.getWatchProviders(this.id).pipe(
+        catchError(() => of({ id: +this.id, results: {} } as WatchProvidersResponse))
+      )
     }).subscribe({
-      next: ({ details, credits }) => {
+      next: ({ details, credits, providers }) => {
         this.movie.set(details);
         this.credits.set(credits);
         this.isFavorite.set(this.favoritesService.isFavorite(details.id));
+
+        const userLocale = typeof navigator !== 'undefined' ? navigator.language : 'es-ES';
+        let countryCode = (userLocale.split('-')[1] || 'ES').toUpperCase();
+
+        if (providers && providers.results) {
+          if (!providers.results[countryCode]) {
+            const fallbackCode = providers.results['ES'] ? 'ES' : (providers.results['US'] ? 'US' : Object.keys(providers.results)[0]);
+            if (fallbackCode) {
+              countryCode = fallbackCode;
+            }
+          }
+          this.watchProviders.set(providers.results[countryCode] || null);
+        } else {
+          this.watchProviders.set(null);
+        }
+
         this.isLoading.set(false);
       },
       error: () => {
@@ -80,5 +101,9 @@ export class MovieDetails implements OnInit {
   formatVoteCount(count: number): string {
     if (count >= 1000) return (count / 1000).toFixed(1) + 'K';
     return count.toString();
+  }
+
+  getProviderLogoUrl(path: string | null | undefined): string {
+    return path ? `https://image.tmdb.org/t/p/w92${path}` : '';
   }
 }

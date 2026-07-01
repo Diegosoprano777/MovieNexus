@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { Movie, MovieResponse } from '../models/movie.model';
+import { Movie, MovieResponse, WatchProvidersResponse } from '../models/movie.model';
 import { CreditsResponse } from '../models/cast.model';
 
 @Injectable({
@@ -70,6 +70,12 @@ export class MovieService {
   getMovieVideos(id: string | number) {
     return this.http.get<{ results: Array<{ key: string; site: string; type: string; name: string }> }>(
       `${this.apiUrl}/movie/${id}/videos`
+    );
+  }
+
+  getWatchProviders(id: string | number): Observable<WatchProvidersResponse> {
+    return this.http.get<WatchProvidersResponse>(
+      `${this.apiUrl}/movie/${id}/watch/providers`
     );
   }
 
